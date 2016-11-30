@@ -112,11 +112,16 @@ awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3 / 100.)  " " ($4/ 100.) " <NA> <
 
 #Audacity print out
 #Labels for Audacity import
-awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n",($3 / 100.), (($3+$4)/ 100.), $8)}' $show/$show.c.3.seg > $show/$show.1.txt
+#awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n",($3 / 100.), (($3+$4)/ 100.), $8)}' $show/$show.c.3.seg > $show/$show.1.txt
 
-#Audacity reconversion to RTTM
-awk '!/^;;/ {print "SPEAKER show_SECTION_A 1 " $1 " " $2-$1 " <NA> <NA> " $3 " <NA> <NA>"}' $show/$show.txt > $show/$show.rttm
+#Audacity reconversion to RTTM -- NEEDS REVISION
+#awk '!/^;;/ {print "SPEAKER show_SECTION_A 1 " $1 " " $2-$1 " <NA> <NA> " $3 " <NA> <NA>"}' $show/$show.txt > $show/$show.rttm
 
-#perl for DER calculations
-#md-eval-v21.pl [-h] -r <ref_file> -s <src_file>
-perl C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/perl/md-eval-v21.pl -r C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/show_ALL_SECTIONS/show_ALL_SECTIONS.rttm -s C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/show_ALL_SECTIONS/show_ALL_SECTIONS.1.rttm > show_ALL_SECTIONS.DER.txt
+#perl for DER calculations (original template format guide)
+# md-eval-v21.pl [-h] -r <ref_file> -s <src_file>
+
+#perl in my specific application
+#C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r 'RESULTS/Podcast Files/Newstalk Breakfast 01.07.rttm' -s 20140701/20140701.1.rttm
+
+#THIS AWK changes the .csv to .rttm properly
+#awk 'BEGIN{a=0} !/^;;/ {print "SPEAKER 20140701 1 " a ".00 " (($15*3600) + ($16*60) + $17) ".00 <NA> <NA> " $8 " <NA> <NA>"; a = a + (($15*3600) + ($16*60) + $17);}' 'Newstalk Breakfast 01.07.csv' > 'Newstalk Breakfast 01.07.rttm'
