@@ -51,6 +51,7 @@ echo "#####################################################"
 echo "#   $show"
 echo "#####################################################"
 
+
 mkdir ./$datadir >& /dev/null
 
 $java -Xmx1024m -cp lium_spkdiarization-8.4.1.jar fr.lium.spkDiarization.programs.MSegInit --help --fInputMask=$features --fInputDesc=$fDesc --sInputMask=$uem --sOutputMask=./$datadir/%s.i.seg  $show
@@ -108,7 +109,12 @@ $java -Xmx1024m -cp lium_spkdiarization-8.4.1.jar fr.lium.spkDiarization.program
 
 #RTTM print out
 #conversion from .seg format to .rttm using guidelines acquired in Albayzin Speaker Diarization 2016 Evaluation
-awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3 / 100.)  " " ($4/ 100.) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.1.rttm
+awk '!/^;;/ {print "SPEAKER " $1 " 1 " $2 " " ($3 / 100)  " " ($4/ 100) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.rttm
+
+#converesion from .csv to .rttm
+awk '!/^;;/ {print "SPEAKER R" $4 "S" $1 "W" $2 "D" $3 " 1 " ( ($7 * 3600) + ( $8 * 60 ) + $9 ) ".00 " ( ($13 * 3600) + ( $14 * 60 ) + $15 ) ".00 <NA> <NA> " $5 " <NA> <NA>"}' $show.csv > $show.ref.rttm
+
+C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show/$show.rttm > $show.perl.log
 
 #Audacity print out
 #Labels for Audacity import
@@ -117,11 +123,14 @@ awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3 / 100.)  " " ($4/ 100.) " <NA> <
 #Audacity reconversion to RTTM -- NEEDS REVISION
 #awk '!/^;;/ {print "SPEAKER show_SECTION_A 1 " $1 " " $2-$1 " <NA> <NA> " $3 " <NA> <NA>"}' $show/$show.txt > $show/$show.rttm
 
-#perl for DER calculations (original template format guide)
+#perl for DER calculations
 # md-eval-v21.pl [-h] -r <ref_file> -s <src_file>
 
-#perl in my specific application
-#C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r 'RESULTS/Podcast Files/Newstalk Breakfast 01.07.rttm' -s 20140701/20140701.1.rttm
+# perl C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/perl/md-eval-v21.pl -r C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/show_ALL_SECTIONS/show_ALL_SECTIONS.rttm -s C:/cygwin/home/Sean/lium_spkdiarization-8.4.1/show_ALL_SECTIONS/show_ALL_SECTIONS.1.rttm > show_ALL_SECTIONS.DER.txt
 
-#THIS AWK changes the .csv to .rttm properly
-#awk 'BEGIN{a=0} !/^;;/ {print "SPEAKER 20140701 1 " a ".00 " (($15*3600) + ($16*60) + $17) ".00 <NA> <NA> " $8 " <NA> <NA>"; a = a + (($15*3600) + ($16*60) + $17);}' 'Newstalk Breakfast 01.07.csv' > 'Newstalk Breakfast 01.07.rttm'
+#awk '!/^;;/ {print "$1 " " $2 " " $3 " " $4 " " $5 " " $6 " " $7 " " $8 " " $9; $10 = $7 + $9; }' 'Newstalk Breakfast 01.07.csv' > 'Newstalk Breakfast 01.07.fixed.csv'
+
+#awk 'BEGIN{a=0}
+#!/^;;/ {print "SPEAKER 20140701 1 " a ".00 " (($15*3600) + ($16*60) + $17) ".00 <NA> <NA> " $8 " <NA> <NA>"; a = a + (($15*3600) + ($16*60) + $17);}' 'Newstalk Breakfast 01.07.csv' > 'Newstalk Breakfast 01.07.rttm'
+
+#awk '!/^;;/ {print "SPEAKER " $1 "." $2 "." $3 "." $4 ":" $5 ":" $6 " 1 " (($9*3600) + ($10*60) + $11) " " (($15*3600) + ($16*60) + $17) " <NA> <NA> " $8 " <NA> <NA>"}' 'Newstalk Breakfast 01.07.fixed.csv' > 'Newstalk Breakfast 01.07.rttm'
