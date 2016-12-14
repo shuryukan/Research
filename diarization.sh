@@ -109,10 +109,10 @@ $java -Xmx1024m -cp lium_spkdiarization-8.4.1.jar fr.lium.spkDiarization.program
 
 #RTTM print out
 #conversion from .seg format to .rttm using guidelines acquired in Albayzin Speaker Diarization 2016 Evaluation
-awk '!/^;;/ {print "SPEAKER " $1 " 1 " $2 " " ($3 / 100)  " " ($4/ 100) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.rttm
+awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " (($3-($3%100))/ 100)  " " (($4-($4%100))/ 100) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.rttm
 
 #converesion from .csv to .rttm
-awk '!/^;;/ {print "SPEAKER R" $4 "S" $1 "W" $2 "D" $3 " 1 " ( ($7 * 3600) + ( $8 * 60 ) + $9 ) ".00 " ( ($13 * 3600) + ( $14 * 60 ) + $15 ) ".00 <NA> <NA> " $5 " <NA> <NA>"}' $show.csv > $show.ref.rttm
+awk '!/^;;/ {print "SPEAKER R" $4 "S" $1 "W" $2 "D" $3 " 1 " ( ($6 * 3600) + ( $7 * 60 ) + $8 ) " " ( ($12 * 3600) + ( $13 * 60 ) + $14 ) " <NA> <NA> " $5 " <NA> <NA>"}' $show.csv > $show.ref.rttm
 
 C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show/$show.rttm > $show.perl.log
 
@@ -134,3 +134,12 @@ C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show
 #!/^;;/ {print "SPEAKER 20140701 1 " a ".00 " (($15*3600) + ($16*60) + $17) ".00 <NA> <NA> " $8 " <NA> <NA>"; a = a + (($15*3600) + ($16*60) + $17);}' 'Newstalk Breakfast 01.07.csv' > 'Newstalk Breakfast 01.07.rttm'
 
 #awk '!/^;;/ {print "SPEAKER " $1 "." $2 "." $3 "." $4 ":" $5 ":" $6 " 1 " (($9*3600) + ($10*60) + $11) " " (($15*3600) + ($16*60) + $17) " <NA> <NA> " $8 " <NA> <NA>"}' 'Newstalk Breakfast 01.07.fixed.csv' > 'Newstalk Breakfast 01.07.rttm'
+
+#RTTM print out from new csv with only Gender info
+#same as above but with full decimal accuracy
+awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3./ 100)  " " ($4./100) " <NA> <NA> " $5 " <NA> <NA>"}' R2S11W1D2.c.3.seg > R2S11W1D2.sexonly.rttm
+
+#same as above but with printf function instead
+awk '!/^;;/ {printf("SPEAKER R%dS%dW%dD%d 1 %.2f %.2f <NA> <NA> %d <NA> <NA>\n", $4, $1, $2, $3,( ($6 * 3600) + ( $7 * 60 ) + $8 ), ( ($12 * 3600) + ( $13 * 60 ) + $14 ), $5)  }' R2S11W1D2.sexonly.csv > R2S11W1D2.sexonly.ref.rttm
+
+C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r RESULTS/R2S11W1D2/R2S11W1D2.sexonly.ref.rttm -s RESULTS/R2S11W1D2/R2S11W1D2.sexonly.rttm > R2S11W1D2.sexonly.perl.log
