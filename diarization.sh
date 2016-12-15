@@ -109,12 +109,12 @@ $java -Xmx1024m -cp lium_spkdiarization-8.4.1.jar fr.lium.spkDiarization.program
 
 #RTTM print out
 #conversion from .seg format to .rttm using guidelines acquired in Albayzin Speaker Diarization 2016 Evaluation
-awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " (($3-($3%100))/ 100)  " " (($4-($4%100))/ 100) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.rttm
+#awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " (($3-($3%100))/ 100)  " " (($4-($4%100))/ 100) " <NA> <NA> " $8 " <NA> <NA>"}' $show/$show.c.3.seg > $show/$show.rttm
 
 #converesion from .csv to .rttm
-awk '!/^;;/ {print "SPEAKER R" $4 "S" $1 "W" $2 "D" $3 " 1 " ( ($6 * 3600) + ( $7 * 60 ) + $8 ) " " ( ($12 * 3600) + ( $13 * 60 ) + $14 ) " <NA> <NA> " $5 " <NA> <NA>"}' $show.csv > $show.ref.rttm
+#awk '!/^;;/ {print "SPEAKER R" $4 "S" $1 "W" $2 "D" $3 " 1 " ( ($6 * 3600) + ( $7 * 60 ) + $8 ) " " ( ($12 * 3600) + ( $13 * 60 ) + $14 ) " <NA> <NA> " $5 " <NA> <NA>"}' $show.csv > $show.ref.rttm
 
-C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show/$show.rttm > $show.perl.log
+#C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show/$show.rttm > $show.perl.log
 
 #Audacity print out
 #Labels for Audacity import
@@ -137,21 +137,21 @@ C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r $show.ref.rttm -s $show
 
 #RTTM print out from new csv with only Gender info
 #same as above but with full decimal accuracy
-awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3./ 100)  " " ($4./100) " <NA> <NA> " $5 " <NA> <NA>"}' R2S11W1D2.c.3.seg > R2S11W1D2.sexonly.rttm
+#awk '!/^;;/ {print "SPEAKER " $1 " " $2 " " ($3./ 100)  " " ($4./100) " <NA> <NA> " $5 " <NA> <NA>"}' R2S11W1D2.c.3.seg > R2S11W1D2.sexonly.rttm
 
 #same as above but with printf function instead
-awk '!/^;;/ {printf("SPEAKER R%dS%dW%dD%d 1 %.2f %.2f <NA> <NA> %d <NA> <NA>\n", $4, $1, $2, $3,( ($6 * 3600) + ( $7 * 60 ) + $8 ), ( ($12 * 3600) + ( $13 * 60 ) + $14 ), $5)  }' R2S11W1D2.sexonly.csv > R2S11W1D2.sexonly.ref.rttm
+#awk '!/^;;/ {printf("SPEAKER R%dS%dW%dD%d 1 %.2f %.2f <NA> <NA> %d <NA> <NA>\n", $4, $1, $2, $3,( ($6 * 3600) + ( $7 * 60 ) + $8 ), ( ($12 * 3600) + ( $13 * 60 ) + $14 ), $5)  }' R2S11W1D2.sexonly.csv > R2S11W1D2.sexonly.ref.rttm
 
-C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r RESULTS/R2S11W1D2/R2S11W1D2.sexonly.ref.rttm -s RESULTS/R2S11W1D2/R2S11W1D2.sexonly.rttm > R2S11W1D2.sexonly.perl.log
+#C:/Strawberry/perl/bin/perl.exe ./perl/md-eval-v21.pl -r RESULTS/R2S11W1D2/R2S11W1D2.sexonly.ref.rttm -s RESULTS/R2S11W1D2/R2S11W1D2.sexonly.rttm > R2S11W1D2.sexonly.perl.log
 
 #Audacity example
-awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n",($3 / 100.), (($3+$4)/ 100.), $8)}' $show/$show.c.3.seg > $show/$show.1.txt
+#awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n",($3 / 100.), (($3+$4)/ 100.), $8)}' $show/$show.c.3.seg > $show/$show.1.txt
 
 #NEW Segment to Audacity conversion
-awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s%s\n", ($3 / 100.), (($3 + $4)/ 100.) , $5, $8)}' $show/$show.c.3.seg > $show/$show.aud.txt
+#awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s%s\n", ($3 / 100.), (($3 + $4)/ 100.) , $5, $8)}' $show/$show.c.3.seg > $show/$show.aud.txt
 
 #CSV to Audacity conversion DOESN'T WORK?
-awk '!/^;;/ {printf("%0.2f\t%0.2f\t%c%s\n", ( ($5 * 3600.) + ( $6 * 60. ) + $7 ), ( ($8 * 3600.) + ( $9 * 60. ) + $10 ), $15, $14)}' $show/$show.csv > $show/$show.audref.txt
+#awk '!/^;;/ {printf("%0.2f\t%0.2f\t%c%s\n", ( ($5 * 3600.) + ( $6 * 60. ) + $7 ), ( ($8 * 3600.) + ( $9 * 60. ) + $10 ), $15, $14)}' $show/$show.csv > $show/$show.audref.txt
 
 #CSV to Audacity conversion WORKS?
-awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n", ( ($6 * 3600.) + ( $7 * 60. ) + $8 ), ( ($12 * 3600.) + ( $13 * 60. ) + $14 ), $5)  }' $show/$show.sexonly.csv > $show/$show.sexonly.audref.txt
+#awk '!/^;;/ {printf("%0.2f\t%0.2f\t%s\n", ( ($6 * 3600.) + ( $7 * 60. ) + $8 ), ( ($9 * 3600.) + ( $10 * 60. ) + $11 ), $5)  }' $show/$show.sexonly.csv > $show/$show.sexonly.audref.txt
